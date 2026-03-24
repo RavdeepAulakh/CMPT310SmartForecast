@@ -5,6 +5,10 @@ import numpy as np
 
 def train_baseline(X_train, X_test, y_train, y_test):
 
+    from sklearn.linear_model import LinearRegression
+    from sklearn.metrics import mean_squared_error, r2_score
+    import numpy as np
+
     model = LinearRegression()
     model.fit(X_train, y_train)
 
@@ -14,8 +18,9 @@ def train_baseline(X_train, X_test, y_train, y_test):
     rmse = np.sqrt(mse)
     r2 = r2_score(y_test, y_pred)
 
-    print("Mean Squared Error:", mse)
-    print("Root Mean Squared Error:", rmse)
-    print("R^2 Score:", r2)
+    print("\nLinear Regression Results:")
+    print("MSE:", mse)
+    print("RMSE:", rmse)
+    print("R²:", r2)
 
-    return model
+    return {"model": "Linear Regression", "mse": mse, "rmse": rmse, "r2": r2}
