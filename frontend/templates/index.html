@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Forecast - Exam Score Predictor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 480px;
+            padding: 40px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 36px;
+        }
+
+        h1 {
+            color: #1a1a2e;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 18px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        input::placeholder {
+            color: #9ca3af;
+        }
+
+        .unit {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-container {
+            margin-top: 24px;
+            text-align: center;
+            display: none;
+        }
+
+        .result-container.show {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .prediction-value {
+            font-size: 56px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .prediction-label {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .confidence-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #f3f4f6;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .train-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 2px dashed #e5e7eb;
+            text-align: center;
+        }
+
+        .train-btn {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .train-btn:hover {
+            background: #f5f3ff;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s ease-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 12px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid #e5e7eb;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">&#127915;</div>
+            <h1>Smart Forecast</h1>
+            <p class="subtitle">Predict your exam score with AI</p>
+        </div>
+
+        <form id="predictionForm">
+            <div class="form-group">
+                <label for="hoursStudied">Hours Studied</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">&#128204;</span>
+                    <input type="number" id="hoursStudied" name="hours_studied" step="0.5" min="0" max="24" placeholder="e.g., 3.5" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="sleepHours">Sleep Hours</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">&#128064;</span>
+                    <input type="number" id="sleepHours" name="sleep_hours" step="0.5" min="0" max="24" placeholder="e.g., 7.0" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="attendancePercent">Attendance (%)</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">&#128194;</span>
+                    <input type="number" id="attendancePercent" name="attendance_percent" step="1" min="0" max="100" placeholder="e.g., 85" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="previousScores">Previous Scores (avg)</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">&#9733;</span>
+                    <input type="number" id="previousScores" name="previous_scores" step="1" min="0" max="100" placeholder="e.g., 50" required>
+                </div>
+            </div>
+
+            <button type="submit" id="predictBtn">
+                Predict My Score
+            </button>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p style="color: #6b7280; font-size: 14px;">Analyzing your data...</p>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+
+            <div class="result-container" id="resultContainer">
+                <div class="prediction-value" id="predictionValue">--</div>
+                <div class="prediction-label">Predicted Exam Score</div>
+                <span class="confidence-badge">&#128176; Based on Linear Regression Model</span>
+            </div>
+
+            <div class="train-section">
+                <button type="button" class="train-btn" id="trainBtn">
+                    Train with Latest Data
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('predictionForm');
+        const predictBtn = document.getElementById('predictBtn');
+        const loading = document.getElementById('loading');
+        const resultContainer = document.getElementById('resultContainer');
+        const errorMessage = document.getElementById('errorMessage');
+        const predictionValue = document.getElementById('predictionValue');
+        const trainBtn = document.getElementById('trainBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Hide previous results and errors
+            resultContainer.classList.remove('show');
+            errorMessage.classList.remove('show');
+
+            // Show loading
+            predictBtn.style.display = 'none';
+            loading.classList.add('show');
+
+            try {
+                const formData = {
+                    hours_studied: parseFloat(document.getElementById('hoursStudied').value),
+                    sleep_hours: parseFloat(document.getElementById('sleepHours').value),
+                    attendance_percent: parseFloat(document.getElementById('attendancePercent').value),
+                    previous_scores: parseFloat(document.getElementById('previousScores').value)
+                };
+
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    predictionValue.textContent = data.prediction;
+                    resultContainer.classList.add('show');
+                } else {
+                    showError(data.error);
+                }
+            } catch (error) {
+                showError('Unable to connect to the server. Please make sure it is running.');
+            } finally {
+                predictBtn.style.display = 'block';
+                loading.classList.remove('show');
+            }
+        });
+
+        trainBtn.addEventListener('click', async () => {
+            try {
+                const response = await fetch('/train', { method: 'POST' });
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Model trained successfully! Your predictions will be more accurate.');
+                    trainBtn.textContent = 'Model Trained &#10004;';
+                } else {
+                    showError(data.error);
+                }
+            } catch (error) {
+                showError('Unable to connect to the server. Please make sure it is running.');
+            }
+        });
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+        }
+    </script>
+</body>
+</html>

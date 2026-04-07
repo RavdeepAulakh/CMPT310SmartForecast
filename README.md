@@ -55,8 +55,47 @@ This will:
 │   ├── baseline_model.py      # Baseline model training
 │   ├── model_experiments.py   # Random Forest and SVR models
 │   └── final_model.py         # Best model selection and evaluation
+├── frontend/           # Web interface for predictions
+│   ├── app.py          # Flask web application
+│   ├── templates/      # HTML templates
+│   │   └── index.html  # Main prediction page
+│   ├── static/         # Static assets
+│   ├── train_model.py  # Script to train and save model
+│   ├── requirements.txt # Frontend dependencies
+│   └── models/         # Saved models (after training)
 └── README.md           # This file
 ```
+
+## Running the Frontend (Prediction Web Interface)
+
+### Step 1: Install Frontend Dependencies
+
+```bash
+cd frontend
+pip install -r requirements.txt
+cd ..
+```
+
+### Step 2: Train and Save the Model
+
+Before using the web interface, train and save the model:
+
+```bash
+python frontend/train_model.py
+```
+
+This will:
+- Load the exam data
+- Train a Linear Regression model
+- Save the trained model to `frontend/models/`
+
+### Step 3: Start the Web Server
+
+```bash
+python frontend/app.py
+```
+
+Then open your browser and go to: **http://localhost:8000**
 
 ## Data
 
