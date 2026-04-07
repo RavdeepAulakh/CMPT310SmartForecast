@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMPT 310 — Smart Forecast: How-To Guide</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #2980b9;
+            --code-bg: #1e1e2e;
+            --code-text: #cdd6f4;
+            --light-bg: #f8f9fa;
+            --border: #dee2e6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.7;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            background: #fff;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.3rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.3rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .meta {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 2rem;
+            padding: 0.8rem 1rem;
+            background: var(--light-bg);
+            border-radius: 6px;
+        }
+
+        code {
+            font-family: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+            background: #eef1f5;
+            padding: 0.15em 0.4em;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #c7254e;
+        }
+
+        pre {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 1.2rem 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            font-size: inherit;
+        }
+
+        .figure {
+            text-align: center;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: var(--light-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .figure img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .figure figcaption {
+            margin-top: 0.8rem;
+            font-style: italic;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .image-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e9ecef;
+            border: 2px dashed #adb5bd;
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .image-placeholder::before {
+            content: "📷 ";
+        }
+
+        .tip {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem 1.2rem;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .tip strong {
+            color: #0c5460;
+        }
+
+        .warning {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 1rem 1.2rem;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .warning strong {
+            color: #721c24;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 0.6rem 1rem;
+            text-align: left;
+        }
+
+        th {
+            background: var(--primary);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: var(--light-bg);
+        }
+
+        .license {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 1rem 1.2rem;
+            border-radius: 0 6px 6px 0;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .toc {
+            background: var(--light-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        .toc ol {
+            margin-bottom: 0;
+        }
+
+        .toc a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            border-radius: 50%;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        @media print {
+            body { max-width: 100%; padding: 1rem; }
+            pre { page-break-inside: avoid; }
+            .figure { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CMPT 310 — Smart Forecast: How-To Guide</h1>
+    <p class="subtitle">Building, Training, and Deploying an Exam Score Prediction Model with scikit-learn and Flask</p>
+
+    <div class="meta">
+        <strong>Course:</strong> CMPT 310 &nbsp;|&nbsp;
+        <strong>Project:</strong> Smart Forecast &nbsp;|&nbsp;
+        <strong>Stack:</strong> Python, scikit-learn, pandas, matplotlib, Flask
+    </div>
+
+    <!-- Table of Contents -->
+    <nav class="toc">
+        <h3>Table of Contents</h3>
+        <ol>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#setup">Environment Setup</a></li>
+            <li><a href="#data">Understanding the Dataset</a></li>
+            <li><a href="#preprocessing">Step 1 — Data Preprocessing</a></li>
+            <li><a href="#eda">Step 2 — Exploratory Data Analysis (EDA)</a></li>
+            <li><a href="#baseline">Step 3 — Training a Baseline Model</a></li>
+            <li><a href="#experiments">Step 4 — Model Experiments with Grid Search</a></li>
+            <li><a href="#comparison">Step 5 — Model Comparison &amp; Selection</a></li>
+            <li><a href="#evaluation">Step 6 — Final Evaluation &amp; Visualizations</a></li>
+            <li><a href="#deployment">Step 7 — Deploying to a Flask Web App</a></li>
+            <li><a href="#troubleshooting">Troubleshooting</a></li>
+            <li><a href="#license">License</a></li>
+        </ol>
+    </nav>
+
+    <!-- 1. Overview -->
+    <h2 id="overview">1. Overview</h2>
+    <p>
+        This guide walks through the complete machine learning pipeline for the <strong>Smart Forecast</strong> project: predicting student exam scores from features like hours studied, sleep hours, attendance percentage, and previous scores. The pipeline covers data loading, preprocessing, EDA, training three regression models (Linear Regression, Random Forest, and Support Vector Regression), comparing them, and deploying the best model as a Flask web application where users can input their study habits and receive a predicted exam score.
+    </p>
+    <p>
+        The project is structured into modular Python scripts under <code>src/</code> for the ML pipeline and <code>frontend/</code> for the web interface.
+    </p>
+
+    <!-- 2. Setup -->
+    <h2 id="setup">2. Environment Setup</h2>
+
+    <h3><span class="step-number">1</span>Clone the Repository</h3>
+    <pre><code>git clone &lt;repository-url&gt;
+cd CMPT310SmartForecast</code></pre>
+
+    <h3><span class="step-number">2</span>Create and Activate a Virtual Environment</h3>
+    <pre><code>python -m venv myenv
+source myenv/bin/activate   # On Windows: myenv\Scripts\activate</code></pre>
+
+    <h3><span class="step-number">3</span>Install Dependencies</h3>
+    <pre><code>pip install -r requirements.txt</code></pre>
+
+    <p>The key packages installed include:</p>
+    <ul>
+        <li><code>scikit-learn==1.8.0</code> — ML models, preprocessing, metrics, GridSearchCV</li>
+        <li><code>pandas==3.0.1</code> — Data loading and manipulation</li>
+        <li><code>matplotlib==3.10.8</code> and <code>seaborn==0.13.2</code> — Visualizations</li>
+        <li><code>numpy==2.4.2</code> — Numerical operations</li>
+        <li><code>joblib==1.5.3</code> — Model serialization</li>
+    </ul>
+
+
+    <!-- 3. Dataset -->
+    <h2 id="data">3. Understanding the Dataset</h2>
+    <p>
+        The dataset is stored in <code>data/exams.csv</code> and contains 200 student records with the following columns:
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th>Column</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>student_id</code></td><td>String</td><td>Unique identifier (e.g., S001)</td></tr>
+            <tr><td><code>hours_studied</code></td><td>Float</td><td>Hours spent studying for the exam</td></tr>
+            <tr><td><code>sleep_hours</code></td><td>Float</td><td>Average nightly sleep hours</td></tr>
+            <tr><td><code>attendance_percent</code></td><td>Float</td><td>Class attendance percentage</td></tr>
+            <tr><td><code>previous_scores</code></td><td>Int</td><td>Average of prior test/exam scores</td></tr>
+            <tr><td><code>exam_score</code></td><td>Float</td><td><strong>Target variable</strong> — the final exam score</td></tr>
+        </tbody>
+    </table>
+
+    <p>Sample rows from the dataset:</p>
+    <pre><code>student_id,hours_studied,sleep_hours,attendance_percent,previous_scores,exam_score
+S001,8.0,8.8,72.1,45,30.2
+S002,1.3,8.6,60.7,55,25.0
+S003,4.0,8.2,73.7,86,35.8</code></pre>
+
+    <div class="figure">
+        <img src="images/Figure_9.png" alt="">
+        
+    </div>
+
+    <!-- 4. Data Preprocessing -->
+    <h2 id="preprocessing">4. Step 1 — Data Preprocessing</h2>
+    <p>
+        The preprocessing module (<code>src/data_preprocessing.py</code>) handles two tasks: loading the CSV and splitting the data into training and test sets.
+    </p>
+
+    <h3>Loading the Data</h3>
+    <pre><code>import pandas as pd
+
+def load_data(path):
+    df = pd.read_csv(path)
+    return df</code></pre>
+
+    <h3>Splitting Features and Target</h3>
+    <pre><code>from sklearn.model_selection import train_test_split
+
+def split_data(df):
+    X = df.drop(columns=["student_id", "exam_score"])
+    y = df["exam_score"]
+
+    return train_test_split(
+        X, y,
+        test_size=0.2,
+        random_state=42
+    )</code></pre>
+
+    <p><strong>Key decisions:</strong></p>
+    <ul>
+        <li><code>student_id</code> is dropped because it is a non-predictive identifier.</li>
+        <li><code>exam_score</code> is the target variable (y).</li>
+        <li>The remaining four columns (<code>hours_studied</code>, <code>sleep_hours</code>, <code>attendance_percent</code>, <code>previous_scores</code>) form the feature matrix (X).</li>
+        <li>An 80/20 train-test split is used with <code>random_state=42</code> for reproducibility.</li>
+    </ul>
+
+    <!-- 5. EDA -->
+    <h2 id="eda">5. Step 2 — Exploratory Data Analysis (EDA)</h2>
+    <p>
+        Before training any models, we visualize the data to understand distributions, correlations, and relationships between features and the target. The EDA module (<code>src/eda.py</code>) produces four types of plots.
+    </p>
+
+    <h3>5.1 Score Distribution</h3>
+    <pre><code>def plot_score_distribution(df):
+    plt.hist(df["exam_score"], bins=20)
+    plt.title("Distribution of Exam Scores")
+    plt.xlabel("Exam Score")
+    plt.ylabel("Count")
+    plt.show()</code></pre>
+
+    <div class="figure">
+        <img src="images/Figure_1.png" alt="Distribution of Exam Scores">
+        <figcaption><strong>Figure 1:</strong> Histogram showing the distribution of exam scores across the dataset.</figcaption>
+    </div>
+
+    <h3>5.2 Correlation Matrix</h3>
+    <pre><code>def plot_correlations(df):
+    corr = df.drop(columns=["student_id"]).corr()
+    sns.heatmap(corr, annot=True, cmap="coolwarm")
+    plt.title("Correlation Matrix")
+    plt.show()</code></pre>
+
+    <div class="figure">
+        <img src="images/Figure_2.png" alt="Correlation Matrix Heatmap">
+        <figcaption><strong>Figure 2:</strong> Heatmap of the correlation matrix between all numeric features and the exam score.</figcaption>
+    </div>
+
+    <h3>5.3 Scatter Plots — Feature vs. Target</h3>
+    <pre><code>def scatter_relationships(df):
+    features = ["hours_studied", "sleep_hours",
+                "attendance_percent", "previous_scores"]
+    for feature in features:
+        plt.scatter(df[feature], df["exam_score"])
+        plt.xlabel(feature)
+        plt.ylabel("exam_score")
+        plt.title(f"{feature} vs Exam Score")
+        plt.show()</code></pre>
+
+    <div class="figure">
+        <img src="images/Figure_3.png" alt="Hours Studied vs Exam Score">
+        <figcaption><strong>Figure 3:</strong> Scatter plot of hours studied vs. exam score.</figcaption>
+    </div>
+
+    <div class="figure">
+        <img src="images/Figure_4.png" alt="Sleep Hours vs Exam Score">
+        <figcaption><strong>Figure 4:</strong> Scatter plot of sleep hours vs. exam score.</figcaption>
+    </div>
+
+    <div class="figure">
+        <img src="images/Figure_5.png" alt="Attendance Percent vs Exam Score">
+        <figcaption><strong>Figure 5:</strong> Scatter plot of attendance percentage vs. exam score.</figcaption>
+    </div>
+
+    <div class="figure">
+        <img src="images/Figure_6.png" alt="Previous Scores vs Exam Score">
+        <figcaption><strong>Figure 6:</strong> Scatter plot of previous scores vs. exam score.</figcaption>
+    </div>
+
+    <p>
+        These plots reveal which features have the strongest linear relationship with the exam score. For instance, <code>hours_studied</code> typically shows a positive trend, while <code>sleep_hours</code> may show a weaker or non-linear relationship.
+    </p>
+
+    <!-- 6. Baseline -->
+    <h2 id="baseline">6. Step 3 — Training a Baseline Model</h2>
+    <p>
+        We start with a simple <strong>Linear Regression</strong> model as our baseline. This gives us a reference point to compare more complex models against.
+    </p>
+
+    <pre><code>from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+import numpy as np
+
+def train_baseline(X_train, X_test, y_train, y_test):
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
+    mse = mean_squared_error(y_test, y_pred)
+    rmse = np.sqrt(mse)
+    r2 = r2_score(y_test, y_pred)
+
+    print("\nLinear Regression Results:")
+    print("MSE:", mse)
+    print("RMSE:", rmse)
+    print("R²:", r2)
+
+    return {"model": "Linear Regression", "mse": mse, "rmse": rmse, "r2": r2}</code></pre>
+
+    <p><strong>Metrics explained:</strong></p>
+    <ul>
+        <li><strong>MSE (Mean Squared Error)</strong> — Average squared difference between predicted and actual values. Lower is better.</li>
+        <li><strong>RMSE (Root Mean Squared Error)</strong> — MSE in the original units of the target. Easier to interpret.</li>
+        <li><strong>R² (Coefficient of Determination)</strong> — Proportion of variance explained by the model. Closer to 1 is better.</li>
+    </ul>
+
+    <img src="images/Figure_10.png">
+
+    <!-- 7. Experiments -->
+    <h2 id="experiments">7. Step 4 — Model Experiments with Grid Search</h2>
+    <p>
+        We experiment with two more powerful models: <strong>Random Forest Regressor</strong> and <strong>Support Vector Regression (SVR)</strong>. Both are tuned using <code>GridSearchCV</code> with 5-fold cross-validation.
+    </p>
+
+    <h3>7.1 Random Forest with Grid Search</h3>
+    <pre><code>from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import GridSearchCV
+
+def random_forest_model(X_train, X_test, y_train, y_test):
+    param_grid = {
+        "n_estimators": [50, 100],
+        "max_depth": [None, 5, 10],
+        "min_samples_split": [2, 5]
+    }
+
+    rf = RandomForestRegressor(random_state=42)
+    grid = GridSearchCV(rf, param_grid, cv=5, scoring="r2", n_jobs=-1)
+    grid.fit(X_train, y_train)
+
+    best_model = grid.best_estimator_
+    print("\nBest Random Forest Params:", grid.best_params_)
+
+    return evaluate_model("Random Forest", best_model, X_test, y_test)</code></pre>
+
+    <p><strong>Grid search parameters:</strong></p>
+    <ul>
+        <li><code>n_estimators</code>: Number of trees (50 or 100)</li>
+        <li><code>max_depth</code>: Maximum tree depth (unlimited, 5, or 10)</li>
+        <li><code>min_samples_split</code>: Minimum samples to split a node (2 or 5)</li>
+    </ul>
+    <p>This creates 3 × 3 × 2 = 18 parameter combinations, each evaluated with 5-fold CV, for a total of 90 model fits.</p>
+
+    <h3>7.2 Support Vector Regression with Pipeline</h3>
+    <pre><code>from sklearn.svm import SVR
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+
+def svr_model(X_train, X_test, y_train, y_test):
+    pipeline = Pipeline([
+        ("scaler", StandardScaler()),
+        ("svr", SVR())
+    ])
+
+    param_grid = {
+        "svr__C": [0.1, 1, 10],
+        "svr__epsilon": [0.1, 0.5, 1],
+        "svr__kernel": ["linear", "rbf"]
+    }
+
+    grid = GridSearchCV(pipeline, param_grid, cv=5, scoring="r2", n_jobs=-1)
+    grid.fit(X_train, y_train)
+
+    best_model = grid.best_estimator_
+    print("\nBest SVR Params:", grid.best_params_)
+
+    return evaluate_model("SVR", best_model, X_test, y_test)</code></pre>
+
+    <p><strong>Why a Pipeline?</strong> SVR is sensitive to feature scaling. The <code>StandardScaler</code> is included in the pipeline so that scaling is applied correctly within each cross-validation fold, preventing data leakage.</p>
+
+    <p><strong>Grid search parameters:</strong></p>
+    <ul>
+        <li><code>C</code>: Regularization strength (0.1, 1, 10)</li>
+        <li><code>epsilon</code>: Epsilon in the epsilon-SVR model (0.1, 0.5, 1)</li>
+        <li><code>kernel</code>: Kernel type (linear or RBF)</li>
+    </ul>
+
+    <img src="images/Figure_11.png"> 
+
+    <!-- 8. Comparison -->
+    <h2 id="comparison">8. Step 5 — Model Comparison &amp; Selection</h2>
+    <p>
+        After training all three models, we compile their results into a comparison table and select the model with the highest R² score.
+    </p>
+
+    <h3>Comparison Table</h3>
+    <pre><code>results = []
+results.append(train_baseline(X_train, X_test, y_train, y_test))
+results.append(random_forest_model(X_train, X_test, y_train, y_test))
+results.append(svr_model(X_train, X_test, y_train, y_test))
+
+print("\n=== Model Comparison Table ===")
+df_results = pd.DataFrame(results)
+print(df_results)</code></pre>
+
+    <img src="images/Figure_12.png"> 
+
+    <h3>Selecting the Best Model</h3>
+    <pre><code>def select_best_model(results):
+    best = max(results, key=lambda x: x["r2"])
+    print("\nBest Model Selected:", best["model"])
+    return best["model"]</code></pre>
+
+    <p>
+        The best model is then retrained on the full training set (without the grid search overhead) using the optimal hyperparameters discovered during grid search.
+    </p>
+
+    <pre><code>def retrain_best(model_name, X_train, y_train):
+    if model_name == "Linear Regression":
+        model = LinearRegression()
+    elif model_name == "Random Forest":
+        model = RandomForestRegressor(n_estimators=100, random_state=42)
+    elif model_name == "SVR":
+        model = Pipeline([
+            ("scaler", StandardScaler()),
+            ("svr", SVR(C=1, epsilon=0.1, kernel="rbf"))
+        ])
+    model.fit(X_train, y_train)
+    return model</code></pre>
+
+    <!-- 9. Evaluation -->
+    <h2 id="evaluation">9. Step 6 — Final Evaluation &amp; Visualizations</h2>
+    <p>
+        The selected best model is evaluated on the held-out test set, and two diagnostic plots are generated.
+    </p>
+
+    <h3>9.1 Final Performance Metrics</h3>
+    <pre><code>def final_evaluation(model, X_test, y_test):
+    y_pred = model.predict(X_test)
+    mse = mean_squared_error(y_test, y_pred)
+    rmse = np.sqrt(mse)
+    r2 = r2_score(y_test, y_pred)
+
+    print("\n=== Final Model Performance ===")
+    print("MSE:", mse)
+    print("RMSE:", rmse)
+    print("R²:", r2)
+    return y_pred</code></pre>
+
+    <img src="images/Figure_13.png">    
+
+    <h3>9.2 Actual vs. Predicted Scores</h3>
+    <pre><code>def plot_predictions(y_test, y_pred):
+    plt.scatter(y_test, y_pred)
+    plt.xlabel("Actual Scores")
+    plt.ylabel("Predicted Scores")
+    plt.title("Actual vs Predicted Scores")
+
+    min_val = min(y_test.min(), y_pred.min())
+    max_val = max(y_test.max(), y_pred.max())
+    plt.plot([min_val, max_val], [min_val, max_val])  # ideal line
+    plt.show()</code></pre>
+
+    <div class="figure">
+        <img src="images/Figure_7.png" alt="Actual vs Predicted Scores">
+        <figcaption><strong>Figure 7:</strong> Scatter plot of actual vs. predicted exam scores. Points closer to the diagonal line indicate better predictions.</figcaption>
+    </div>
+
+    <h3>9.3 Residual Distribution</h3>
+    <pre><code>def plot_residuals(y_test, y_pred):
+    residuals = y_test - y_pred
+    plt.hist(residuals, bins=20)
+    plt.title("Residual Distribution")
+    plt.xlabel("Error")
+    plt.ylabel("Frequency")
+    plt.show()</code></pre>
+
+    <div class="figure">
+        <img src="images/Figure_8.png" alt="Residual Distribution">
+        <figcaption><strong>Figure 8:</strong> Histogram of prediction residuals. A centered, bell-shaped distribution indicates unbiased predictions.</figcaption>
+    </div>
+
+    <!-- 10. Deployment -->
+    <h2 id="deployment">10. Step 7 — Deploying to a Flask Web App</h2>
+    <p>
+        The final step is deploying the trained model as an interactive web application using Flask. Users can input their study parameters and receive a predicted exam score in real time.
+    </p>
+
+    <h3><span class="step-number">1</span>Install Frontend Dependencies</h3>
+    <pre><code>cd frontend
+pip install -r requirements.txt
+cd ..</code></pre>
+
+    <h3><span class="step-number">2</span>Train and Save the Model</h3>
+    <pre><code>python frontend/train_model.py</code></pre>
+
+    <p>This script (<code>frontend/train_model.py</code>) trains a Linear Regression model with StandardScaler preprocessing and saves both the model and scaler to <code>frontend/models/</code>:</p>
+
+    <pre><code>import joblib
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LinearRegression
+import pandas as pd
+
+df = pd.read_csv('../data/exams.csv')
+X = df.drop(columns=["student_id", "exam_score"])
+y = df["exam_score"]
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+model = LinearRegression()
+model.fit(X_scaled, y)
+
+joblib.dump(model, 'models/best_model.pkl')
+joblib.dump(scaler, 'models/scaler.pkl')</code></pre>
+
+    <h3><span class="step-number">3</span>Start the Flask Server</h3>
+    <pre><code>python frontend/app.py</code></pre>
+
+    <p>The Flask app (<code>frontend/app.py</code>) exposes two endpoints:</p>
+    <ul>
+        <li><code>GET /</code> — Renders the prediction form (HTML template)</li>
+        <li><code>POST /predict</code> — Accepts JSON with features, applies the saved scaler, runs the model, and returns the predicted score</li>
+    </ul>
+
+    <pre><code>@app.route('/predict', methods=['POST'])
+def predict():
+    data = request.get_json()
+
+    features = {
+        'hours_studied': float(data['hours_studied']),
+        'sleep_hours': float(data['sleep_hours']),
+        'attendance_percent': float(data['attendance_percent']),
+        'previous_scores': float(data['previous_scores'])
+    }
+
+    df_input = pd.DataFrame([features])
+    scaler = load_scaler()
+    scaled_features = scaler.transform(df_input)
+
+    model = load_model()
+    prediction = model.predict(scaled_features)[0]
+    prediction = np.clip(prediction, 0, 100)  # Clamp to valid range
+
+    return jsonify({'prediction': round(float(prediction), 2), 'success': True})</code></pre>
+
+    <p>
+        After starting the server, open <a href="http://localhost:8000">http://localhost:8000</a> in your browser to access the prediction interface.
+    </p>
+    
+    <div class="figure">
+    	<img src="images/Figure_14.png"> 
+    </div>
+    
+    <!-- 11. Troubleshooting -->
+    <h2 id="troubleshooting">11. Troubleshooting</h2>
+
+    <h3>Error 1: Model or Scaler Not Found</h3>
+    <div class="warning">
+        <strong>Problem:</strong> When running the Flask app, you get an error like:
+        <pre style="margin-top: 0.5rem; margin-bottom: 0;"><code>Error: Model not found at models/best_model.pkl</code></pre>
+    </div>
+    <p><strong>Cause:</strong> The model has not been trained and saved yet, or the <code>models/</code> directory does not exist.</p>
+    <p><strong>Fix:</strong></p>
+    <pre><code># Make sure the models directory exists
+mkdir -p frontend/models
+
+# Train and save the model
+python frontend/train_model.py</code></pre>
+
+    <h3>Error 2: Feature Mismatch / Wrong Input Order</h3>
+    <div class="warning">
+        <strong>Problem:</strong> The model gives nonsensical predictions or crashes with a shape mismatch error.
+    </div>
+    <p><strong>Cause:</strong> The order of features in the input DataFrame must match the order used during training. The scaler expects features in the exact same column order.</p>
+    <p><strong>Fix:</strong> Ensure the feature dictionary in the Flask <code>/predict</code> endpoint matches the training order:</p>
+    <pre><code>FEATURE_COLS = ['hours_studied', 'sleep_hours', 'attendance_percent', 'previous_scores']
+
+features = {
+    'hours_studied': float(data['hours_studied']),
+    'sleep_hours': float(data['sleep_hours']),
+    'attendance_percent': float(data['attendance_percent']),
+    'previous_scores': float(data['previous_scores'])
+}</code></pre>
+
+    <h3>Error 3: SVR Training is Very Slow</h3>
+    <div class="tip">
+        <strong>Tip:</strong> SVR with GridSearchCV tests 3 × 3 × 2 = 18 parameter combinations, each with 5-fold CV (90 fits total). This can take several minutes. This is expected behavior. If it seems frozen, be patient — the <code>n_jobs=-1</code> flag uses all available CPU cores to speed things up.
+    </div>
+
+    <h3>Error 4: ModuleNotFoundError When Running main.py</h3>
+    <div class="warning">
+        <strong>Problem:</strong> <code>ModuleNotFoundError: No module named 'sklearn'</code> or similar.
+    </div>
+    <p><strong>Cause:</strong> The virtual environment is not activated or dependencies are not installed.</p>
+    <p><strong>Fix:</strong></p>
+    <pre><code># Activate the virtual environment
+source myenv/bin/activate
+
+# Reinstall dependencies
+pip install -r requirements.txt</code></pre>
+
+    <!-- 12. License -->
+    <h2 id="license">12. License</h2>
+    <div class="license">
+        <p>
+            <strong>Copyright &copy; 2026 — CMPT 310 Smart Forecast Team</strong>
+        </p>
+        <p>
+            We grant the instructor and Simon Fraser University (SFU) permission to post this guide online and share it with future CMPT 310 students for academic and educational purposes. We retain full copyright of this work.
+        </p>
+    </div>
+
+</body>
+</html>

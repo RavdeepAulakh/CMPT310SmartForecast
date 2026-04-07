@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMPT 310 — Smart Forecast: Project Write-Up</title>
+    <style>
+        :root {
+            --primary: #1a2332;
+            --accent: #2563eb;
+            --accent-light: #dbeafe;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --bg-light: #f8fafc;
+            --bg-code: #0f172a;
+            --text-code: #e2e8f0;
+            --success: #16a34a;
+            --warning-bg: #fef3c7;
+            --warning-border: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Georgia", "Times New Roman", serif;
+            line-height: 1.65;
+            color: var(--text);
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0.75in 0.85in;
+            background: #fff;
+            font-size: 11pt;
+        }
+
+        /* ---- Title Page ---- */
+        .title-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 9in;
+            text-align: center;
+            page-break-after: always;
+        }
+
+        .title-page h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+            letter-spacing: -0.5px;
+        }
+
+        .title-page .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            font-style: italic;
+        }
+
+        .title-page .divider {
+            width: 80px;
+            height: 3px;
+            background: var(--accent);
+            margin-bottom: 2.5rem;
+        }
+
+        .title-page .meta-block {
+            font-size: 1rem;
+            color: var(--text);
+            line-height: 2;
+        }
+
+        .title-page .meta-block strong {
+            color: var(--primary);
+        }
+
+        /* ---- Section Headings ---- */
+        h1 {
+            font-size: 1.6rem;
+            color: var(--primary);
+            border-bottom: 2.5px solid var(--accent);
+            padding-bottom: 0.35rem;
+            margin-bottom: 1rem;
+            margin-top: 0;
+            page-break-after: avoid;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-top: 1.5rem;
+            margin-bottom: 0.6rem;
+            page-break-after: avoid;
+        }
+
+        h3 {
+            font-size: 1.05rem;
+            color: var(--accent);
+            margin-top: 1.2rem;
+            margin-bottom: 0.4rem;
+            page-break-after: avoid;
+        }
+
+        p {
+            margin-bottom: 0.75rem;
+            text-align: justify;
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        li {
+            margin-bottom: 0.25rem;
+        }
+
+        /* ---- Code ---- */
+        code {
+            font-family: "SF Mono", "Fira Code", Consolas, monospace;
+            background: #f1f5f9;
+            padding: 0.1em 0.35em;
+            border-radius: 3px;
+            font-size: 0.88em;
+            color: #be185d;
+        }
+
+        pre {
+            background: var(--bg-code);
+            color: var(--text-code);
+            padding: 0.9rem 1.2rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+            font-size: 0.82rem;
+            line-height: 1.5;
+            font-family: "SF Mono", "Fira Code", Consolas, monospace;
+            page-break-inside: avoid;
+        }
+
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            font-size: inherit;
+        }
+
+        /* ---- Figures ---- */
+        .figure {
+            text-align: center;
+            margin: 1.2rem 0;
+            padding: 0.8rem;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            page-break-inside: avoid;
+        }
+
+        .figure img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .figure figcaption {
+            margin-top: 0.5rem;
+            font-style: italic;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .image-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            border: 2px dashed #94a3b8;
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            color: #64748b;
+            font-style: italic;
+            font-size: 0.9rem;
+            page-break-inside: avoid;
+        }
+
+        /* ---- Tables ---- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+            font-size: 0.88rem;
+            page-break-inside: avoid;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 0.5rem 0.7rem;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: var(--primary);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        tr:nth-child(even) {
+            background: var(--bg-light);
+        }
+
+        /* ---- Callout Boxes ---- */
+        .callout {
+            padding: 0.8rem 1rem;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 1rem;
+            page-break-inside: avoid;
+            font-size: 0.95rem;
+        }
+
+        .callout.limitation {
+            background: var(--warning-bg);
+            border-left: 4px solid var(--warning-border);
+        }
+
+        .callout.limitation strong {
+            color: #92400e;
+        }
+
+        .callout.note {
+            background: var(--accent-light);
+            border-left: 4px solid var(--accent);
+        }
+
+        .callout.note strong {
+            color: #1e40af;
+        }
+
+        /* ---- Pipeline Diagram ---- */
+        .pipeline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin: 1.2rem 0;
+            padding: 1rem;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            page-break-inside: avoid;
+        }
+
+        .pipeline-step {
+            background: var(--accent);
+            color: #fff;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .pipeline-arrow {
+            color: var(--accent);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* ---- Completeness Badge ---- */
+        .badge {
+            display: inline-block;
+            padding: 0.15em 0.5em;
+            border-radius: 10px;
+            font-size: 0.8em;
+            font-weight: 700;
+            text-align: center;
+            min-width: 2em;
+        }
+
+        .badge-5 { background: #dcfce7; color: #166534; }
+        .badge-4 { background: #dbeafe; color: #1e40af; }
+        .badge-3 { background: #fef3c7; color: #92400e; }
+
+        /* ---- Print Styles ---- */
+        @media print {
+            body {
+                padding: 0;
+                font-size: 10.5pt;
+            }
+
+            .title-page {
+                min-height: 100vh;
+            }
+
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+
+            .figure, .image-placeholder, pre, table, .callout, .pipeline {
+                page-break-inside: avoid;
+            }
+
+            section {
+                page-break-inside: avoid;
+            }
+
+            /* Force section starts on new page */
+            .page-break {
+                page-break-before: always;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+        }
+
+        @page {
+            size: letter;
+            margin: 0.5in 0.75in;
+            @top-left { content: none; }
+            @top-center { content: none; }
+            @top-right { content: none; }
+            @bottom-left { content: none; }
+            @bottom-center { content: none; }
+            @bottom-right { content: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== TITLE PAGE ==================== -->
+    <div class="title-page">
+        <h1>Smart Forecast</h1>
+        <p class="subtitle">Exam Score Prediction Using Supervised Machine Learning</p>
+        <div class="divider"></div>
+        <div class="meta-block">
+            <strong>Course:</strong> CMPT 310 — Introduction to Artificial Intelligence<br>
+            <strong>Term:</strong> Spring 2026<br>
+            <strong>Institution:</strong> Simon Fraser University<br>
+            <br>
+            <strong>Project Type:</strong> Final Project Write-Up<br>
+            <strong>Date:</strong> April 2026
+        </div>
+    </div>
+
+    <!-- ==================== 1. SYSTEM EXPLANATION ==================== -->
+    <section>
+        <h1>1. System Explanation</h1>
+
+        <h2>1.1 What Does the System Do?</h2>
+        <p>
+            Smart Forecast is a machine learning system that predicts a student's final exam score based on four input features: hours studied, average nightly sleep hours, class attendance percentage, and previous test scores. The system trains multiple regression models, compares their performance, selects the best-performing model, and deploys it as an interactive Flask web application where users can input their own study habits and receive an instant predicted exam score.
+        </p>
+
+        <h2>1.2 AI Methods Used</h2>
+        <p>
+            The system employs three supervised regression algorithms from scikit-learn:
+        </p>
+        <ul>
+            <li><strong>Linear Regression</strong> — A parametric baseline model that fits a linear relationship between features and the target. Simple, fast, and interpretable.</li>
+            <li><strong>Random Forest Regressor</strong> — An ensemble of decision trees that captures non-linear relationships and feature interactions. Tuned via grid search over tree count, depth, and split criteria.</li>
+            <li><strong>Support Vector Regression (SVR)</strong> — A kernel-based method that finds a function within an epsilon-tube around predictions. Uses StandardScaler preprocessing and is tuned over C, epsilon, and kernel type (linear vs. RBF).</li>
+        </ul>
+        <p>
+            All models are evaluated using <strong>5-fold cross-validation</strong> during hyperparameter tuning (GridSearchCV), with R² as the scoring metric. Final evaluation uses MSE, RMSE, and R² on a held-out 20% test set.
+        </p>
+
+        <h2>1.3 AI Pipeline</h2>
+        <p>The system follows a standard ML pipeline, implemented across modular Python scripts:</p>
+
+        <div class="pipeline">
+            <span class="pipeline-step">CSV Data Input</span>
+            <span class="pipeline-arrow">&#8594;</span>
+            <span class="pipeline-step">Preprocessing<br><small>(drop ID, split 80/20)</small></span>
+            <span class="pipeline-arrow">&#8594;</span>
+            <span class="pipeline-step">EDA<br><small>(plots &amp; correlations)</small></span>
+            <span class="pipeline-arrow">&#8594;</span>
+            <span class="pipeline-step">Model Training<br><small>(LR, RF, SVR + GridSearch)</small></span>
+            <span class="pipeline-arrow">&#8594;</span>
+            <span class="pipeline-step">Model Selection<br><small>(best R²)</small></span>
+            <span class="pipeline-arrow">&#8594;</span>
+            <span class="pipeline-step">Evaluation &amp;<br>Visualization</span>
+            <span class="pipeline-arrow">&#8594;</span>
+            <span class="pipeline-step">Flask Web<br>Deployment</span>
+        </div>
+
+      
+
+        <h3>Pipeline Components</h3>
+        <p>Each stage is implemented in a separate module under <code>src/</code>:</p>
+        <ul>
+            <li><code>data_preprocessing.py</code> — Loads <code>data/exams.csv</code>, drops <code>student_id</code>, separates features and target, performs 80/20 train-test split with <code>random_state=42</code>.</li>
+            <li><code>eda.py</code> — Generates histograms, correlation heatmaps, and scatter plots to understand data distributions and feature-target relationships.</li>
+            <li><code>baseline_model.py</code> — Trains a Linear Regression model and reports MSE, RMSE, and R².</li>
+            <li><code>model_experiments.py</code> — Trains Random Forest and SVR with GridSearchCV (5-fold CV), reports best hyperparameters and test metrics.</li>
+            <li><code>final_model.py</code> — Selects the best model by R², retrains on the full training set, evaluates on the test set, and generates diagnostic plots.</li>
+        </ul>
+
+        <h2>1.4 Output &amp; Evaluation</h2>
+        <p>
+            The pipeline produces quantitative metrics and visual diagnostics. The model comparison table summarizes performance across all three models:
+        </p>
+
+       
+
+        <p>
+            The best model's predictions are visualized with two diagnostic plots:
+        </p>
+
+        <div class="figure">
+            <img src="images/Figure_7.png" alt="Actual vs Predicted Scores">
+            <figcaption><strong>Figure 1:</strong> Actual vs. predicted exam scores. Points near the diagonal indicate accurate predictions.</figcaption>
+        </div>
+
+        <div class="figure">
+            <img src="images/Figure_8.png" alt="Residual Distribution">
+            <figcaption><strong>Figure 2:</strong> Distribution of prediction residuals. A centered distribution indicates minimal systematic bias.</figcaption>
+        </div>
+
+        
+
+        <h2>1.5 Limitations</h2>
+
+        <div class="callout limitation">
+            <strong>Small Dataset (200 samples).</strong> With only 200 records and 4 features, the models have limited data to learn complex patterns. This increases the risk of overfitting, especially for Random Forest which can memorize small datasets. <em>Mitigation:</em> We use 5-fold cross-validation during hyperparameter tuning and hold out a 20% test set for unbiased evaluation.
+        </div>
+
+       
+
+        <div class="callout limitation">
+            <strong>Linear Regression as Deployed Model.</strong> The Flask deployment uses Linear Regression rather than the potentially higher-performing Random Forest or SVR. While Linear Regression is simpler and faster for real-time inference, it cannot capture non-linear relationships between features and exam scores. <em>Mitigation:</em> The pipeline trains and compares all three models so the trade-off is understood. The deployment model can be swapped by changing the model class in <code>frontend/train_model.py</code>.
+        </div>
+
+        <div class="callout limitation">
+            <strong>No Feature Engineering.</strong> The system uses raw features without creating interaction terms, polynomial features, or domain-specific transformations (e.g., study efficiency = score/hours). This may limit model performance. <em>Mitigation:</em> Grid search over model hyperparameters partially compensates by allowing the model to find optimal complexity.
+        </div>
+
+        <div class="callout limitation">
+            <strong>SVR Sensitivity to Scaling.</strong> SVR requires feature scaling to perform well. Without the StandardScaler pipeline, SVR would produce poor results. This was identified during development and addressed by wrapping SVR in a scikit-learn Pipeline.
+        </div>
+    </section>
+
+    <!-- ==================== PAGE BREAK ==================== -->
+    <div class="page-break"></div>
+
+    <!-- ==================== 2. FEATURE TABLE ==================== -->
+    <section>
+        <h1>2. Feature Table</h1>
+        <p>
+            The following table summarizes the key components of the Smart Forecast AI system. The completeness scale is: <strong>5</strong> = fully working, tested, integrated; <strong>4</strong> = working but missing polish; <strong>3</strong> = partially complete, demonstrates concept.
+        </p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:18%">Description</th>
+                    <th style="width:8%">Platform</th>
+                    <th style="width:7%">Complete.</th>
+                    <th style="width:8%">Code</th>
+                    <th style="width:12%">Author(s)</th>
+                    <th style="width:47%">Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Data Loading &amp; CSV Parsing</td>
+                    <td>Local</td>
+                    <td><span class="badge badge-5">5</span></td>
+                    <td>Python</td>
+                    <td>Team</td>
+                    <td>Loads <code>exams.csv</code> via pandas. Handles 200 rows, 6 columns. Clean, tested, integrated into full pipeline.</td>
+                </tr>
+                <tr>
+                    <td>Train-Test Split &amp; Feature Selection</td>
+                    <td>Local</td>
+                    <td><span class="badge badge-5">5</span></td>
+                    <td>Python</td>
+                    <td>Team</td>
+                    <td>Drops <code>student_id</code>, separates features/target. 80/20 split with <code>random_state=42</code> for reproducibility. Fully integrated.</td>
+                </tr>
+                <tr>
+                    <td>Exploratory Data Analysis (EDA)</td>
+                    <td>Local</td>
+                    <td><span class="badge badge-5">5</span></td>
+                    <td>Python</td>
+                    <td>Team</td>
+                    <td>Generates score histogram, correlation heatmap, and 4 scatter plots. All plots save/display correctly. Graphs included in this report.</td>
+                </tr>
+                <tr>
+                    <td>Linear Regression Baseline</td>
+                    <td>Local</td>
+                    <td><span class="badge badge-5">5</span></td>
+                    <td>Python</td>
+                    <td>Team</td>
+                    <td>Trains, evaluates, and returns MSE/RMSE/R². Used as both baseline and deployed model. Clean and fully tested.</td>
+                </tr>
+                <tr>
+                    <td>Random Forest with Grid Search</td>
+                    <td>Local</td>
+                    <td><span class="badge badge-4">4</span></td>
+                    <td>Python</td>
+                    <td>Team</td>
+                    <td>GridSearchCV over n_estimators, max_depth, min_samples_split with 5-fold CV. Works correctly; best params printed. Could benefit from wider param grid.</td>
+                </tr>
+                <tr>
+                    <td>SVR with Pipeline &amp; Grid Search</td>
+                    <td>Local</td>
+                    <td><span class="badge badge-4">4</span></td>
+                    <td>Python</td>
+                    <td>Team</td>
+                    <td>StandardScaler + SVR in a Pipeline to prevent data leakage. Grid search over C, epsilon, kernel. Works correctly; slow on large grids (expected for SVR).</td>
+                </tr>
+                <tr>
+                    <td>Model Comparison &amp; Selection</td>
+                    <td>Local</td>
+                    <td><span class="badge badge-5">5</span></td>
+                    <td>Python</td>
+                    <td>Team</td>
+                    <td>Compiles results into a DataFrame, selects best model by highest R². Prints comparison table. Fully integrated into <code>main.py</code>.</td>
+                </tr>
+                <tr>
+                    <td>Final Evaluation &amp; Diagnostics</td>
+                    <td>Local</td>
+                    <td><span class="badge badge-5">5</span></td>
+                    <td>Python</td>
+                    <td>Team</td>
+                    <td>Retrains best model on full training set, evaluates on test set. Generates actual-vs-predicted scatter and residual histogram plots.</td>
+                </tr>
+                <tr>
+                    <td>Model Serialization (joblib)</td>
+                    <td>Local</td>
+                    <td><span class="badge badge-5">5</span></td>
+                    <td>Python</td>
+                    <td>Team</td>
+                    <td>Saves trained model and scaler to <code>frontend/models/</code> as .pkl files. Loaded by Flask app at runtime. Fully working.</td>
+                </tr>
+                <tr>
+                    <td>Flask Web Prediction Interface</td>
+                    <td>Local</td>
+                    <td><span class="badge badge-4">4</span></td>
+                    <td>Python / HTML</td>
+                    <td>Team</td>
+                    <td>Flask app with <code>/predict</code> JSON endpoint and HTML form. Clamps predictions to [0, 100]. Works on localhost; not deployed to cloud. Input validation could be improved.</td>
+                </tr>
+                <tr>
+                    <td>Frontend Model Training Script</td>
+                    <td>Local</td>
+                    <td><span class="badge badge-5">5</span></td>
+                    <td>Python</td>
+                    <td>Team</td>
+                    <td><code>frontend/train_model.py</code> trains and saves model + scaler independently from the main pipeline. Fully working and tested.</td>
+                </tr>
+            </tbody>
+        </table>
+
+       
+    </section>
+
+    <!-- ==================== PAGE BREAK ==================== -->
+    <div class="page-break"></div>
+
+    <!-- ==================== 3. EXTERNAL TOOLS & LIBRARIES ==================== -->
+    <section>
+        <h1>3. External Tools &amp; Libraries</h1>
+
+        <h2>3.1 Core Libraries</h2>
+        <p>All dependencies are standard Python packages installed via pip. The complete list is specified in <code>requirements.txt</code>:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Library</th>
+                    <th>Version</th>
+                    <th>Purpose</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>scikit-learn</td><td>1.8.0</td><td>ML models (LinearRegression, RandomForestRegressor, SVR), GridSearchCV, StandardScaler, Pipeline, train_test_split, metrics</td></tr>
+                <tr><td>pandas</td><td>3.0.1</td><td>CSV loading, DataFrame manipulation, feature extraction</td></tr>
+                <tr><td>numpy</td><td>2.4.2</td><td>Numerical operations, array math, sqrt for RMSE, clip for prediction clamping</td></tr>
+                <tr><td>matplotlib</td><td>3.10.8</td><td>Histograms, scatter plots, line plots, residual distributions</td></tr>
+                <tr><td>seaborn</td><td>0.13.2</td><td>Correlation heatmap visualization</td></tr>
+                <tr><td>joblib</td><td>1.5.3</td><td>Model and scaler serialization (.pkl files)</td></tr>
+                <tr><td>flask</td><td>(frontend req.)</td><td>Web server for prediction API and HTML interface</td></tr>
+            </tbody>
+        </table>
+
+        <h2>3.2 Datasets</h2>
+        <p>
+            The project uses a single dataset: <code>data/exams.csv</code>, a synthetic exam score dataset with 200 student records and 6 columns (student_id, hours_studied, sleep_hours, attendance_percent, previous_scores, exam_score). This dataset was provided for the course project and is included in the repository.
+        </p>
+
+        <h2>3.3 Open-Source Code &amp; Attribution</h2>
+        <p>
+            No external code was copied or reused beyond the standard library APIs listed above. All pipeline logic, model training scripts, EDA code, and Flask application code were written originally by the project team. The scikit-learn, pandas, matplotlib, seaborn, and Flask libraries are used under their respective open-source licenses (BSD, MIT, and related permissive licenses).
+        </p>
+
+        <h2>3.4 Platform Dependencies &amp; Installation</h2>
+        <p>
+            The system runs entirely locally on a standard Python 3.10+ environment. No cloud services, GPUs, or special hardware are required.        
+
+       
+    </section>
+
+</body>
+</html>
