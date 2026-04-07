@@ -64,4 +64,4 @@ The project uses `data/exams.csv` which contains exam-related data for the Smart
 
 ## License
 
-[Specify license if applicable]
+We allow our project to be shared or used in future CMPT310 Class Sessions
